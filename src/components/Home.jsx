@@ -1,5 +1,6 @@
 import React from 'react'
 import toast from 'react-hot-toast';
+import { useDispatch } from 'react-redux';
 const img1 =
   "https://9to5mac.com/wp-content/uploads/sites/6/2019/11/apple-16-inch-macbook-pro-deal-1.jpg?quality=82&strip=all";
 const img2 =
@@ -21,15 +22,24 @@ const Home = () => {
     },
   ]
 
+  const dispatch = useDispatch();
+
   const addToCartHandler = (options) => {
-    console.log(options);
-    toast.success("Added To cart")
-  }
+    dispatch({ type: "addToCart", payload: options });
+    dispatch({ type: "calculatePrice" });
+    toast.success("Added To Cart");
+  };
   return (
     <div className='home'>
       {
         productList.map(i => (
-          <ProductCard key={i.id} imgSrc={i.imgSrc} price={i.price} name={i.name} id={i.id} handler={addToCartHandler} />
+          <ProductCard
+            key={i.id}
+            imgSrc={i.imgSrc}
+            price={i.price}
+            name={i.name}
+            id={i.id}
+            handler={addToCartHandler} />
         ))
       }
     </div>

@@ -1,30 +1,64 @@
 import React from 'react'
 import { AiFillDelete } from 'react-icons/ai'
-
-const img1 =
-  "https://9to5mac.com/wp-content/uploads/sites/6/2019/11/apple-16-inch-macbook-pro-deal-1.jpg?quality=82&strip=all";
-const img2 =
-  "https://img.freepik.com/free-photo/one-white-sneaker-shoe-isolated-white_93675-134695.jpg";
+import { useDispatch, useSelector } from 'react-redux';
 
 const Cart = () => {
+
+  const { cartItems, subTotal, tax, shipping, total } = useSelector(state => state.cart)
+  const dispatch = useDispatch();
+
+  const increment = (id) => {
+    dispatch({
+      type: "addToCart",
+      payload: { id },
+    });
+    dispatch({ type: "calculatePrice" });
+  }
+  const decrement = (id) => {
+    dispatch({
+      type: "decrement",
+      payload: id,
+    });
+    dispatch({ type: "calculatePrice" });
+
+  }
+  const deleteHandler = (id) => {
+    dispatch({
+      type: "deleteFromCart",
+      payload: id,
+    });
+    dispatch({ type: "calculatePrice" });
+
+  }
   return (
     <div className='cart'>
       <main>
-        <CartItem
-          imgSrc={img1}
-          name="Mac Book"
-          price={2322}
-          qty={1}
-          id="adfg"
-        />
+        {
+
+          cartItems.length > 0 ? (
+            cartItems.map(i => (
+              <CartItem
+                imgSrc={i.imgSrc}
+                name={i.name}
+                price={i.price}
+                qty={i.quantity}
+                id={i.id}
+                key={i.id}
+                decrement={decrement}
+                increment={increment}
+                deleteHandler={deleteHandler}
+              />
+            ))
+          ) : <h1>No Items Yet</h1>
+        }
 
       </main>
 
       <aside>
-        <h2>Subtotal: ${2000}</h2>
-        <h2>Shipping: ${20}</h2>
-        <h2>Tax: ${2}</h2>
-        <h2>Total: ${2022}</h2>
+        <h2>Subtotal: ${subTotal}</h2>
+        <h2>Shipping: ${shipping}</h2>
+        <h2>Tax: ${tax}</h2>
+        <h2>Total: ${total}</h2>
       </aside>
     </div>
   )
